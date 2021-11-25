@@ -581,6 +581,7 @@ class App extends React.Component<any, any> {
             utxos={utxos}
             balance={balances}
             onSend={this.onSend}
+            history={history}
             onRename={(address: string, label: string) => {
               this.setState({
                 showAddNode: true,

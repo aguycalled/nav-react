@@ -83,6 +83,7 @@ export default function OpenNode(props: any) {
     wallet,
     onSend,
     utxos,
+    history,
   } = props;
 
   const balanceSpending = props.balance;
@@ -124,6 +125,31 @@ export default function OpenNode(props: any) {
   };
 
   const [tabValue, setTabValue] = React.useState(0);
+
+  const oneDay = 24 * 60 * 60;
+  const today = Math.floor(Date.now() / 1000);
+
+  const stakingStats: any = {};
+  let totalStaked = 0;
+  let totalStaked30d = 0;
+
+  for (const h in history) {
+    const diffDays = Math.round(
+      Math.abs((today - history[h].timestamp) / oneDay)
+    );
+
+    if (
+      history[h].pos == 1 &&
+      history[h].addresses_in.staking.indexOf(nodeData.label.address) != -1
+    ) {
+      if (diffDays < 30) {
+        if (!stakingStats[diffDays]) stakingStats[diffDays] = 0;
+        stakingStats[diffDays] += history[h].amount;
+        totalStaked30d += history[h].amount;
+      }
+      totalStaked += history[h].amount;
+    }
+  }
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -171,10 +197,52 @@ export default function OpenNode(props: any) {
               </Typography>
               <Typography sx={{ mb: 2 }}>
                 Staking balance:{" "}
-                {walletAddresses["staking"][nodeData.label.address]["staking"]
-                  .confirmed / 1e8}{" "}
+                {(walletAddresses["staking"][nodeData.label.address]["staking"]
+                  .confirmed +
+                  walletAddresses["staking"][nodeData.label.address]["staking"]
+                    .pending) /
+                  1e8}{" "}
                 NAV
               </Typography>
+              <Typography sx={{ mb: 2 }}>
+                Total staked: {totalStaked / 1e8} NAV
+              </Typography>
+              <Typography sx={{ mb: 2 }}>
+                Total staked 30 days: {totalStaked30d / 1e8} NAV
+              </Typography>
+              <Typography sx={{ mb: 2 }}>
+                Average per day:{" "}
+                {Object.keys(stakingStats).length
+                  ? totalStaked30d / Object.keys(stakingStats).length / 1e8
+                  : 0}{" "}
+                NAV
+              </Typography>
+              {Object.keys(stakingStats).length > 1 ? (
+                <Typography sx={{ mb: 2 }}>
+                  Estimated yearly return:{" "}
+                  {walletAddresses["staking"][nodeData.label.address]["staking"]
+                    .confirmed +
+                    walletAddresses["staking"][nodeData.label.address][
+                      "staking"
+                    ].pending >
+                    0 && Object.keys(stakingStats).length
+                    ? ((((totalStaked30d / Object.keys(stakingStats).length) *
+                        365) /
+                        (walletAddresses["staking"][nodeData.label.address][
+                          "staking"
+                        ].confirmed +
+                          walletAddresses["staking"][nodeData.label.address][
+                            "staking"
+                          ].pending)) *
+                        100) /
+                      1e8
+                    : 0}
+                  {"%"}
+                </Typography>
+              ) : (
+                <></>
+              )}
+
               <Button
                 sx={{ width: "auto", display: "none" }}
                 onClick={() => {
