@@ -101,6 +101,8 @@ export default function OpenNode(props: any) {
 
   if (!nodeData) return <div></div>;
 
+  console.log(nodeData);
+
   const handleClose = onClose;
 
   const coldStaking = bitcore.Address.fromBuffers(

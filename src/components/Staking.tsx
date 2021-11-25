@@ -171,7 +171,11 @@ function Staking(props: any): React.ReactElement {
                             <Button
                               variant={"text"}
                               onClick={() => {
-                                onOpenNode(addresses.staking[el]);
+                                const obj = addresses.staking[el];
+                                if (!addresses.staking[el].label) {
+                                  obj.label = { name: el, address: el };
+                                }
+                                onOpenNode(obj);
                               }}
                               sx={{ width: "auto" }}
                             >
