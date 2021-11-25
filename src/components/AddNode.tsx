@@ -43,7 +43,8 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
 };
 
 export default function AddNode(props: any) {
-  const { open, onClose, onAccept, error } = props;
+  const { open, onClose, onAccept, error, defaultAddress, defaultLabel } =
+    props;
 
   const [address, setAddress] = useState("");
   const [label, setLabel] = useState("");
@@ -76,10 +77,11 @@ export default function AddNode(props: any) {
           <TextField
             id="filled-password-input"
             label="Address"
-            autoComplete="address"
+            autoComplete="off"
             variant="filled"
             error={error ? true : false}
-            sx={{ mx: 2, mt: 2, width: 320 }}
+            value={address}
+            sx={{ mx: 0, mt: 2, width: "100%", minWidth: 300 }}
             onChange={(e) => {
               setAddress(e.target.value);
             }}
@@ -87,10 +89,11 @@ export default function AddNode(props: any) {
           <TextField
             id="filled-password-input"
             label="Label"
-            autoComplete="label"
+            autoComplete="off"
             variant="filled"
+            value={label}
             error={error ? true : false}
-            sx={{ mx: 2, mt: 2, width: 320 }}
+            sx={{ mx: 0, mt: 2, width: "100%", minWidth: 300 }}
             onChange={(e) => {
               setLabel(e.target.value);
             }}
@@ -110,7 +113,7 @@ export default function AddNode(props: any) {
             onClick={() => {
               handleAccept(address, label);
             }}
-            sx={{ mx: 2, mb: 2 }}
+            sx={{ mx: 2, mb: 2, width: "auto", float: "right" }}
           >
             Ok
           </Button>

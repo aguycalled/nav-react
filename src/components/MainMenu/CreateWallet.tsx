@@ -137,6 +137,7 @@ class CreateWallet extends React.Component<any, any> {
           }}
         >
           <Button
+            sx={{ width: "auto", float: "right" }}
             onClick={() => {
               if (!errorName) {
                 onClick(

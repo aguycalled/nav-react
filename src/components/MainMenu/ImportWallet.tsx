@@ -224,6 +224,7 @@ class ImportWallet extends React.Component<any, any> {
           }}
         >
           <Button
+            sx={{ width: "auto", float: "right" }}
             onClick={() => {
               if (
                 !errorMnemonic &&

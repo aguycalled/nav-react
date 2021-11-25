@@ -198,6 +198,7 @@ export default function Send(props: any): React.ReactElement {
           }}
         >
           <Button
+            sx={{ width: "auto", float: "right" }}
             onClick={async () => {
               if (!errorDest && !errorAmount && to && amount) {
                 await onSend(

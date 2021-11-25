@@ -119,7 +119,7 @@ function Receive(props: any): React.ReactElement {
               mx: 3,
               mt: 2,
               mb: 1,
-              p: 4,
+              p: 2,
               position: "relative",
               wordBreak: "break-word",
               width: 250,

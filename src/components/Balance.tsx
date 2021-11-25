@@ -67,6 +67,8 @@ function Balance(props: any): React.ReactElement {
     setAnchorEl(null);
   };
 
+  console.log(history);
+
   const itemsCount = Math.floor((height - 390) / 70);
 
   return (
@@ -149,7 +151,7 @@ function Balance(props: any): React.ReactElement {
             position: "relative",
           }}
         >
-          <Box sx={{ padding: 1, width: 120 }}>
+          <Box sx={{ padding: 1 }}>
             <Box
               sx={{
                 color: "text.primary",
@@ -183,7 +185,7 @@ function Balance(props: any): React.ReactElement {
             </Box>
           </Box>
 
-          <Box sx={{ padding: 1, width: 120 }}>
+          <Box sx={{ padding: 1 }}>
             <Box
               sx={{
                 color: "text.secondary",
@@ -217,7 +219,7 @@ function Balance(props: any): React.ReactElement {
             </Box>
           </Box>
 
-          <Box sx={{ padding: 1, width: 120 }}>
+          <Box sx={{ padding: 1 }}>
             <Box
               sx={{
                 color: "text.secondary",
@@ -254,7 +256,6 @@ function Balance(props: any): React.ReactElement {
           <Box
             sx={{
               padding: 1,
-              width: 120,
               marginLeft: "auto",
             }}
           >

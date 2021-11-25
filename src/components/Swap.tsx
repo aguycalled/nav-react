@@ -95,6 +95,7 @@ export default function Swap(props: any): React.ReactElement {
               value={from}
               fullWidth
               input={<OutlinedInput label="From" />}
+              sx={{ mb: 2 }}
               onChange={(e) => {
                 if (e.target.value == "nav") {
                   if (amount == balance.xnav.confirmed / 1e8)
@@ -129,6 +130,7 @@ export default function Swap(props: any): React.ReactElement {
               id="dest-select"
               value={to}
               fullWidth
+              sx={{ mb: 2 }}
               input={<OutlinedInput label="To" />}
               onChange={(e) => {
                 if (e.target.value == "nav") {
@@ -199,13 +201,14 @@ export default function Swap(props: any): React.ReactElement {
           }}
         >
           <Button
+            sx={{ width: "auto", float: "right" }}
             onClick={async () => {
               if (!errorAmount && destination && amount) {
                 await onSend(from, destination, amount * 1e8);
               }
             }}
           >
-            Send
+            Swap
           </Button>
         </Box>
       </Box>

@@ -89,6 +89,8 @@ interface IAppState {
   showOpenNode: boolean;
   errorAddNode: string;
   nodeData: any;
+  addNodeAddress: string;
+  addNodeLabel: string;
 }
 
 interface IWalletHistory {
@@ -141,6 +143,8 @@ const INITIAL_STATE: IAppState = {
   showOpenNode: false,
   nodeData: undefined,
   errorAddNode: "",
+  addNodeAddress: "",
+  addNodeLabel: "",
 };
 
 class App extends React.Component<any, any> {
@@ -480,6 +484,8 @@ class App extends React.Component<any, any> {
       errorAddNode,
       showOpenNode,
       nodeData,
+      addNodeAddress,
+      addNodeLabel,
     } = this.state;
 
     return (
@@ -543,6 +549,10 @@ class App extends React.Component<any, any> {
                 this.setState({
                   showAddNode: false,
                   errorAddNode: "",
+                  addNodeAddress: "",
+                  addNodeLabel: "",
+                  stakingAddresses: await this.wallet.GetStakingAddresses(),
+                  addresses: await this.wallet.GetAllAddresses(),
                 });
               } else {
                 this.setState({
@@ -550,10 +560,14 @@ class App extends React.Component<any, any> {
                 });
               }
             }}
+            defaultAddress={addNodeAddress}
+            defaultLabel={addNodeLabel}
             onClose={() => {
               this.setState({
                 showAddNode: false,
                 errorAddNode: "",
+                addNodeAddress: "",
+                addNodeLabel: "",
               });
             }}
             error={errorAddNode}
@@ -567,6 +581,13 @@ class App extends React.Component<any, any> {
             utxos={utxos}
             balance={balances}
             onSend={this.onSend}
+            onRename={(address: string, label: string) => {
+              this.setState({
+                showAddNode: true,
+                addNodeAddress: address,
+                addNodeLabel: label,
+              });
+            }}
             onAccept={async (address: string, label = "") => {
               await this.wallet.AddStakingAddress(address, "", true);
               this.wallet.db.AddLabel(address, "NavCash Pool");
@@ -686,7 +707,11 @@ class App extends React.Component<any, any> {
                 <Staking
                   addresses={addresses}
                   onAddNode={() => {
-                    this.setState({ showAddNode: true });
+                    this.setState({
+                      showAddNode: true,
+                      addNodeLabel: "",
+                      addNodeAddress: "",
+                    });
                   }}
                   onOpenNode={(nodeData: any) => {
                     this.setState({

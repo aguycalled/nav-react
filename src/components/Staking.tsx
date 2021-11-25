@@ -127,7 +127,6 @@ function Staking(props: any): React.ReactElement {
                               fontSize: "14px",
                             }}
                           >
-                            {" "}
                             {addresses.staking[el].label
                               ? addresses.staking[el].label.name
                               : el}
@@ -136,11 +135,16 @@ function Staking(props: any): React.ReactElement {
                         secondary={
                           <React.Fragment>
                             <Typography
-                              sx={{ display: "inline", fontSize: "12px" }}
+                              sx={{
+                                display: "inline",
+                                fontSize: "12px",
+                                width: "10",
+                                textOverflow: "hidden",
+                              }}
                               variant="body2"
                               color="text.primary"
                             >
-                              {el}
+                              {el.substr(0, 10)}...
                             </Typography>
                           </React.Fragment>
                         }
@@ -158,7 +162,7 @@ function Staking(props: any): React.ReactElement {
                           >
                             <Typography
                               sx={{
-                                paddingRight: 4,
+                                paddingRight: 0,
                                 textAlign: "right",
                                 fontSize: "12px",
                               }}

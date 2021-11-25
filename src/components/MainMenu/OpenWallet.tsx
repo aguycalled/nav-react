@@ -103,6 +103,7 @@ class OpenWallet extends React.Component<any, any> {
           }}
         >
           <Button
+            sx={{ width: "auto", float: "right" }}
             onClick={() => {
               if (!errorName && name) {
                 onClick(name, undefined, undefined, password, undefined, zap);

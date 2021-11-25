@@ -74,7 +74,7 @@ export default function OpenNode(props: any) {
   const {
     open,
     onClose,
-    onAccept,
+    onRename,
     error,
     nodeData,
     walletAddresses,
@@ -100,8 +100,6 @@ export default function OpenNode(props: any) {
   }
 
   if (!nodeData) return <div></div>;
-
-  console.log(nodeData);
 
   const handleClose = onClose;
 
@@ -168,13 +166,28 @@ export default function OpenNode(props: any) {
               <Tab label="Unstake" />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
-              <Typography>Address: {nodeData.label.address}</Typography>
-              <Typography>
+              <Typography sx={{ mb: 2 }}>
+                Address: {nodeData.label.address}
+              </Typography>
+              <Typography sx={{ mb: 2 }}>
                 Staking balance:{" "}
                 {walletAddresses["staking"][nodeData.label.address]["staking"]
                   .confirmed / 1e8}{" "}
                 NAV
               </Typography>
+              <Button
+                sx={{ width: "auto", display: "none" }}
+                onClick={() => {
+                  onRename(
+                    nodeData.label.address,
+                    nodeData.label.name
+                      ? nodeData.label.name
+                      : nodeData.label.address
+                  );
+                }}
+              >
+                Change label
+              </Button>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
               <Receive hideTitle={true} addresses={addresses}></Receive>
