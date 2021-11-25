@@ -9,6 +9,9 @@ import {
   Typography,
   InputAdornment,
   IconButton,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
 } from "@material-ui/core";
 import React from "react";
 
@@ -83,13 +86,15 @@ export default function Swap(props: any): React.ReactElement {
             m: (theme) => theme.spacing(0, 1, 1, 1),
           }}
         >
-          <Stack spacing={2}>
-            <Typography>From:</Typography>
+          <FormControl>
+            <InputLabel id="network-label">From</InputLabel>
 
             <Select
               id="network"
+              labelId={"network-label"}
               value={from}
               fullWidth
+              input={<OutlinedInput label="From" />}
               onChange={(e) => {
                 if (e.target.value == "nav") {
                   if (amount == balance.xnav.confirmed / 1e8)
@@ -115,12 +120,16 @@ export default function Swap(props: any): React.ReactElement {
                 xNAV ({balance.xnav.confirmed / 1e8} available)
               </MenuItem>
             </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel id="dest-select-label">To</InputLabel>
 
-            <Typography>To:</Typography>
             <Select
-              id="network"
+              labelId={"dest-select-label"}
+              id="dest-select"
               value={to}
               fullWidth
+              input={<OutlinedInput label="To" />}
               onChange={(e) => {
                 if (e.target.value == "nav") {
                   if (amount == balance.xnav.confirmed / 1e8)
@@ -146,7 +155,8 @@ export default function Swap(props: any): React.ReactElement {
                 xNAV ({balance.xnav.confirmed / 1e8} available)
               </MenuItem>
             </Select>
-
+          </FormControl>
+          <FormControl>
             <TextField
               autoComplete="off"
               id="amount"
@@ -181,7 +191,7 @@ export default function Swap(props: any): React.ReactElement {
                 ),
               }}
             />
-          </Stack>
+          </FormControl>
         </Box>
         <Box
           sx={{

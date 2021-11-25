@@ -103,11 +103,15 @@ function Staking(props: any): React.ReactElement {
             {Object.keys(addresses.staking)
               .slice((pageNumber - 1) * itemsCount, pageNumber * itemsCount)
               .map((el: any) => {
-                return addresses.staking[el].label ? (
+                return addresses.staking[el].staking ? (
                   <>
                     <ListItem
                       alignItems="flex-start"
-                      key={addresses.staking[el].label.address}
+                      key={
+                        addresses.staking[el].label
+                          ? addresses.staking[el].label.address
+                          : el
+                      }
                       sx={{
                         paddingLeft: 4,
                       }}
@@ -124,9 +128,9 @@ function Staking(props: any): React.ReactElement {
                             }}
                           >
                             {" "}
-                            {addresses.staking[el].label.name
+                            {addresses.staking[el].label
                               ? addresses.staking[el].label.name
-                              : addresses.staking[el].label.address}
+                              : el}
                           </Typography>
                         }
                         secondary={
@@ -136,7 +140,7 @@ function Staking(props: any): React.ReactElement {
                               variant="body2"
                               color="text.primary"
                             >
-                              {addresses.staking[el].label.address}
+                              {el}
                             </Typography>
                           </React.Fragment>
                         }
