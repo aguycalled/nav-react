@@ -252,61 +252,6 @@ function Balance(props: any): React.ReactElement {
               Staking NAV
             </Box>
           </Box>
-
-          <Box
-            sx={{
-              padding: 1,
-              marginLeft: "auto",
-            }}
-          >
-            <Box
-              sx={{
-                color: "text.secondary",
-                fontSize: 18,
-                fontWeight: "medium",
-                textAlign: "center",
-              }}
-            >
-              <div>
-                <IconButton
-                  aria-controls="basic-menu"
-                  aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}
-                  onClick={handleClick}
-                >
-                  <ExpandMoreOutlined />
-                </IconButton>
-                <Menu
-                  id="basic-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  MenuListProps={{
-                    "aria-labelledby": "basic-button",
-                  }}
-                >
-                  <MenuItem
-                    sx={{ padding: 1, px: 4 }}
-                    onClick={() => {
-                      onSwap();
-                      handleClose();
-                    }}
-                  >
-                    Swap NAV/xNAV
-                  </MenuItem>
-                  <MenuItem
-                    sx={{ padding: 1, px: 4 }}
-                    onClick={() => {
-                      onStake();
-                      handleClose();
-                    }}
-                  >
-                    Staking
-                  </MenuItem>
-                </Menu>
-              </div>
-            </Box>
-          </Box>
         </Box>
       </Box>
       <Box

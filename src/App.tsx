@@ -10,21 +10,10 @@ import themeOptions from "./themes/Default";
 import Error from "./components/Error";
 import Loading from "./components/Loading";
 
-import NAV_logo from "./assets/NAV.png";
-import WNAV_logo from "./assets/WNAV.svg";
-
 import {
-  Avatar,
   BottomNavigation,
   BottomNavigationAction,
-  Box,
-  Icon,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Paper,
-  Typography,
 } from "@material-ui/core";
 
 import {
@@ -41,30 +30,19 @@ import Mnemonic from "./components/Mnemonic";
 import AskPassword from "./components/AskPassword";
 import xnav from "./assets/XNAV.png";
 import nav from "./assets/NAV.png";
-import Utxos from "./components/Utxos";
 import Receive from "./components/Receive";
 import Send from "./components/Send";
 import ConfirmTx from "./components/ConfirmTx";
-import Stake from "./components/Stake";
-import Swap from "./components/Swap";
-import Staking from "./components/Staking";
-import AddNode from "./components/AddNode";
-import OpenNode from "./components/OpenNode";
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Binance = require("node-binance-api");
 
 themeOptions.spacing(10);
 
 interface IAppState {
-  wallet?: any;
   walletName: string;
   walletList: string[];
   loadingWallet: boolean;
   connectingWallet: boolean;
   errorLoad: string;
   bottomNavigation: any;
-  currency: number;
   balances: {
     nav: { confirmed: number; pending: number };
     xnav: { confirmed: number; pending: number };
@@ -84,13 +62,6 @@ interface IAppState {
   showConfirmTx: boolean;
   toSendTxs: string[];
   blockHeight: number;
-  stakingAddresses: any[];
-  showAddNode: boolean;
-  showOpenNode: boolean;
-  errorAddNode: string;
-  nodeData: any;
-  addNodeAddress: string;
-  addNodeLabel: string;
 }
 
 interface IWalletHistory {
@@ -104,21 +75,13 @@ interface IWalletHistory {
   memos: string[];
 }
 
-const currencies: { name: string; logo: string }[] = [
-  { name: "NAV", logo: NAV_logo },
-  { name: "xNAV", logo: WNAV_logo },
-  //{ name: 'wNAV', logo: WNAV_logo }
-];
-
 const INITIAL_STATE: IAppState = {
-  wallet: undefined,
   walletName: "",
   walletList: [],
   loadingWallet: false,
   connectingWallet: false,
   errorLoad: "",
   bottomNavigation: 0,
-  currency: 0,
   balances: {
     nav: { confirmed: 0, pending: 0 },
     xnav: { confirmed: 0, pending: 0 },
@@ -138,18 +101,10 @@ const INITIAL_STATE: IAppState = {
   showConfirmTx: false,
   toSendTxs: [],
   blockHeight: -1,
-  stakingAddresses: [],
-  showAddNode: false,
-  showOpenNode: false,
-  nodeData: undefined,
-  errorAddNode: "",
-  addNodeAddress: "",
-  addNodeLabel: "",
 };
 
 class App extends React.Component<any, any> {
   public state: IAppState;
-  public binance: any;
   public njs: any;
   public wallet: any;
 
@@ -159,8 +114,6 @@ class App extends React.Component<any, any> {
       ...INITIAL_STATE,
     };
     this.njs = props.njs;
-
-    this.binance = new Binance();
   }
 
   public async componentDidMount() {
@@ -463,7 +416,6 @@ class App extends React.Component<any, any> {
       errorLoad,
       bottomNavigation,
       connectingWallet,
-      currency,
       balances,
       history,
       syncProgress,
@@ -479,13 +431,6 @@ class App extends React.Component<any, any> {
       showConfirmTx,
       toSendTxs,
       blockHeight,
-      stakingAddresses,
-      showAddNode,
-      errorAddNode,
-      showOpenNode,
-      nodeData,
-      addNodeAddress,
-      addNodeLabel,
     } = this.state;
 
     return (
@@ -539,72 +484,6 @@ class App extends React.Component<any, any> {
               });
             }}
             error={errorPassword}
-          />
-          <AddNode
-            open={showAddNode}
-            onAccept={async (address: string, label = "") => {
-              if (this.njs.wallet.bitcore.Address.isValid(address)) {
-                await this.wallet.AddStakingAddress(address, "", true);
-                this.wallet.db.AddLabel(address, label);
-                this.setState({
-                  showAddNode: false,
-                  errorAddNode: "",
-                  addNodeAddress: "",
-                  addNodeLabel: "",
-                  stakingAddresses: await this.wallet.GetStakingAddresses(),
-                  addresses: await this.wallet.GetAllAddresses(),
-                });
-              } else {
-                this.setState({
-                  errorAddNode: "Wrong address",
-                });
-              }
-            }}
-            defaultAddress={addNodeAddress}
-            defaultLabel={addNodeLabel}
-            onClose={() => {
-              this.setState({
-                showAddNode: false,
-                errorAddNode: "",
-                addNodeAddress: "",
-                addNodeLabel: "",
-              });
-            }}
-            error={errorAddNode}
-          />
-          <OpenNode
-            bitcore={this.njs.wallet.bitcore}
-            network={this.wallet ? this.wallet.network : "mainnet"}
-            open={showOpenNode}
-            walletAddresses={addresses}
-            wallet={this.wallet}
-            utxos={utxos}
-            balance={balances}
-            onSend={this.onSend}
-            history={history}
-            onRename={(address: string, label: string) => {
-              this.setState({
-                showAddNode: true,
-                addNodeAddress: address,
-                addNodeLabel: label,
-              });
-            }}
-            onAccept={async (address: string, label = "") => {
-              await this.wallet.AddStakingAddress(address, "", true);
-              this.wallet.db.AddLabel(address, "NavCash Pool");
-              this.setState({
-                showOpenNode: false,
-                nodeData: undefined,
-                errorAddNode: "",
-              });
-            }}
-            onClose={() => {
-              this.setState({
-                showOpenNode: false,
-                nodeData: undefined,
-              });
-            }}
-            nodeData={nodeData}
           />
           {errorLoad ? (
             <Error
@@ -668,14 +547,6 @@ class App extends React.Component<any, any> {
                   balance={balances}
                   onSend={this.onSend}
                 />
-              ) : bottomNavigation == 4 ? (
-                <Swap
-                  addresses={addresses}
-                  wallet={this.njs.wallet}
-                  network={this.wallet.network}
-                  balance={balances}
-                  onSend={this.onSend}
-                />
               ) : bottomNavigation == 2 ? (
                 <Receive addresses={addresses}></Receive>
               ) : bottomNavigation == 3 ? (
@@ -704,26 +575,6 @@ class App extends React.Component<any, any> {
                   walletName={walletName}
                   network={this.wallet.network}
                 ></Settings>
-              ) : bottomNavigation == 5 ? (
-                <Staking
-                  addresses={addresses}
-                  onAddNode={() => {
-                    this.setState({
-                      showAddNode: true,
-                      addNodeLabel: "",
-                      addNodeAddress: "",
-                    });
-                  }}
-                  onOpenNode={(nodeData: any) => {
-                    this.setState({
-                      showOpenNode: true,
-                      nodeData,
-                    });
-                  }}
-                  onStake={() => {
-                    this.setState({ bottomNavigation: 5 });
-                  }}
-                />
               ) : (
                 <>Unknown</>
               )}
@@ -751,8 +602,12 @@ class App extends React.Component<any, any> {
                     icon={<MoveToInboxOutlined />}
                   />
                   <BottomNavigationAction
-                    label="Settings"
-                    icon={<SettingsOutlined />}
+                      label="Settings"
+                      icon={<SettingsOutlined />}
+                  />
+                  <BottomNavigationAction
+                      label="Chat"
+                      icon={<SettingsOutlined />}
                   />
                 </BottomNavigation>
               </Paper>

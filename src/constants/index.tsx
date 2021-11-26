@@ -1,1 +1,1 @@
-export const TITLE = 'Navcoin Web';
+export const TITLE = "Navcoin Hackathon";
