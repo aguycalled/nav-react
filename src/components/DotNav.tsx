@@ -58,8 +58,6 @@ function DotNav(props: any): React.ReactElement {
 
   const itemsCount = Math.floor((height - 390) / 70);
 
-  console.log(names);
-
   return (
     <>
       <Box

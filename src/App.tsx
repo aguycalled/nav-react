@@ -73,7 +73,6 @@ interface IAppState {
   showConfirmTx: boolean;
   toSendTxs: string[];
   blockHeight: number;
-<<<<<<< HEAD
   stakingAddresses: any[];
   showAddNode: boolean;
   showOpenNode: boolean;
@@ -87,8 +86,6 @@ interface IAppState {
   showOpenName: boolean;
   nameData: any;
   openedName: string;
-=======
->>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
 }
 
 interface IWalletHistory {
@@ -128,7 +125,6 @@ const INITIAL_STATE: IAppState = {
   showConfirmTx: false,
   toSendTxs: [],
   blockHeight: -1,
-<<<<<<< HEAD
   stakingAddresses: [],
   showAddNode: false,
   showOpenNode: false,
@@ -142,8 +138,6 @@ const INITIAL_STATE: IAppState = {
   showOpenName: false,
   nameData: {},
   openedName: "",
-=======
->>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
 };
 
 class App extends React.Component<any, any> {
@@ -268,7 +262,6 @@ class App extends React.Component<any, any> {
 
       this.wallet.on("sync_finished", async () => {
         const history: IWalletHistory[] = await this.wallet.GetHistory();
-        console.log("balance", await this.wallet.GetBalance());
 
         this.setState({
           balances: await this.wallet.GetBalance(),
@@ -303,9 +296,7 @@ class App extends React.Component<any, any> {
         this.setState({ showMnemonic: true, mnemonic: mnemonic });
       });
 
-      this.wallet.on("new_tx", async (entry: IWalletHistory) => {
-        console.log(entry);
-      });
+      this.wallet.on("new_tx", async (entry: IWalletHistory) => {});
 
       this.wallet.on("new_block", (height: number) => {
         this.setState({ blockHeight: height });
@@ -613,7 +604,6 @@ class App extends React.Component<any, any> {
       showConfirmTx,
       toSendTxs,
       blockHeight,
-<<<<<<< HEAD
       stakingAddresses,
       showAddNode,
       errorAddNode,
@@ -627,8 +617,6 @@ class App extends React.Component<any, any> {
       showOpenName,
       nameData,
       openedName,
-=======
->>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
     } = this.state;
 
     return (
@@ -685,7 +673,6 @@ class App extends React.Component<any, any> {
             }}
             error={errorPassword}
           />
-<<<<<<< HEAD
           <RegisterName
             open={showRegisterName}
             onAccept={this.onRegisterName}
@@ -779,8 +766,6 @@ class App extends React.Component<any, any> {
             nodeData={nodeData}
             wallet={this.wallet}
           />
-=======
->>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
           {errorLoad ? (
             <Error
               actions={[
@@ -874,7 +859,6 @@ class App extends React.Component<any, any> {
                   walletName={walletName}
                   network={this.wallet.network}
                 ></Settings>
-<<<<<<< HEAD
               ) : bottomNavigation == 5 ? (
                 <Staking
                   addresses={addresses}
@@ -913,8 +897,6 @@ class App extends React.Component<any, any> {
                   }}
                   blockHeight={blockHeight}
                 />
-=======
->>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
               ) : (
                 <>Unknown</>
               )}
@@ -942,12 +924,12 @@ class App extends React.Component<any, any> {
                     icon={<MoveToInboxOutlined />}
                   />
                   <BottomNavigationAction
-                      label="Settings"
-                      icon={<SettingsOutlined />}
+                    label="Settings"
+                    icon={<SettingsOutlined />}
                   />
                   <BottomNavigationAction
-                      label="Chat"
-                      icon={<SettingsOutlined />}
+                    label="Chat"
+                    icon={<SettingsOutlined />}
                   />
                 </BottomNavigation>
               </Paper>
