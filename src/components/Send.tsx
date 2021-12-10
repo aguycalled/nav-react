@@ -201,6 +201,7 @@ export default function Send(props: any): React.ReactElement {
             sx={{ width: "auto", float: "right" }}
             onClick={async () => {
               if (!errorDest && !errorAmount && to && amount) {
+                console.log("send 1");
                 await onSend(
                   from || "nav",
                   to,

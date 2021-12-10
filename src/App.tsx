@@ -50,6 +50,9 @@ import Swap from "./components/Swap";
 import Staking from "./components/Staking";
 import AddNode from "./components/AddNode";
 import OpenNode from "./components/OpenNode";
+import DotNav from "./components/DotNav";
+import RegisterName from "./components/RegisterName";
+import OpenName from "./components/OpenName";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Binance = require("node-binance-api");
@@ -91,6 +94,12 @@ interface IAppState {
   nodeData: any;
   addNodeAddress: string;
   addNodeLabel: string;
+  names: any[];
+  showRegisterName: boolean;
+  errorRegisterName: string;
+  showOpenName: boolean;
+  nameData: any;
+  openedName: string;
 }
 
 interface IWalletHistory {
@@ -145,6 +154,12 @@ const INITIAL_STATE: IAppState = {
   errorAddNode: "",
   addNodeAddress: "",
   addNodeLabel: "",
+  names: [],
+  showRegisterName: false,
+  errorRegisterName: "",
+  showOpenName: false,
+  nameData: {},
+  openedName: "",
 };
 
 class App extends React.Component<any, any> {
@@ -201,6 +216,8 @@ class App extends React.Component<any, any> {
         adapter: "websql",
       });
 
+      (window as any).wallet = this.wallet;
+
       this.setState({
         loadingWallet: true,
         errorLoad: undefined,
@@ -238,6 +255,7 @@ class App extends React.Component<any, any> {
           addresses: await this.wallet.GetAllAddresses(),
           history: history,
           walletName: name,
+          names: await this.wallet.GetMyNames(),
         });
 
         await this.wallet.Connect();
@@ -269,6 +287,7 @@ class App extends React.Component<any, any> {
 
       this.wallet.on("sync_finished", async () => {
         const history: IWalletHistory[] = await this.wallet.GetHistory();
+        console.log("balance", await this.wallet.GetBalance());
 
         this.setState({
           balances: await this.wallet.GetBalance(),
@@ -278,6 +297,21 @@ class App extends React.Component<any, any> {
         });
         this.setState({ syncProgress: 100, pendingQueue: 0 });
       });
+
+      this.wallet.on("new_name", async (name: string, height: number) => {
+        this.setState({ names: await this.wallet.GetMyNames() });
+      });
+
+      this.wallet.on(
+        "update_name",
+        async (name: string, height: number, data: any) => {
+          const { openedName } = this.state;
+
+          if (name == openedName) {
+            this.setState({ nameData: data });
+          }
+        }
+      );
 
       this.wallet.on("connected", (server: string) =>
         console.log(`connected to ${server}. waiting for sync`)
@@ -289,7 +323,7 @@ class App extends React.Component<any, any> {
       });
 
       this.wallet.on("new_tx", async (entry: IWalletHistory) => {
-        //console.log(entry);
+        console.log(entry);
       });
 
       this.wallet.on("new_block", (height: number) => {
@@ -372,6 +406,126 @@ class App extends React.Component<any, any> {
         askPassword: true,
         afterPassword: afterFunc,
         errorPassword: "",
+      });
+    }
+  };
+
+  public onRegisterName = async (name: string) => {
+    const afterFunc = async (password: string) => {
+      const mnemonic: string = await this.wallet.db.GetMasterKey(
+        "mnemonic",
+        password
+      );
+
+      if (mnemonic) {
+        this.setState({
+          showRegisterName: false,
+          askPassword: false,
+          afterPassword: undefined,
+          errorPassword: "",
+        });
+        await this.onRegisterNamePassword(name, password);
+      } else {
+        this.setState({ errorPassword: "Wrong password!" });
+      }
+    };
+    if (await this.wallet.GetMasterKey("mnemonic", undefined)) {
+      await afterFunc("");
+    } else {
+      this.setState({
+        askPassword: true,
+        afterPassword: afterFunc,
+        errorPassword: "",
+      });
+    }
+  };
+
+  public onRegisterNamePassword = async (name: string, password = "") => {
+    try {
+      const txs = await this.wallet.RegisterName(name, password);
+      if (txs) {
+        this.setState({
+          showConfirmTx: true,
+          confirmTxText: `Register ${name} Fee: ${txs.fee / 1e8}`,
+          toSendTxs: txs.tx,
+        });
+      } else {
+        this.setState({
+          errorLoad: "Could not create transaction.",
+          showConfirmTx: false,
+          confirmTxText: "",
+          toSendTxs: [],
+        });
+      }
+    } catch (e: any) {
+      this.setState({
+        errorLoad: e.toString(),
+        showConfirmTx: false,
+        confirmTxText: "",
+        toSendTxs: [],
+      });
+    }
+  };
+
+  public onUpdateName = async (name: string, key: string, value: string) => {
+    const afterFunc = async (password: string) => {
+      const mnemonic: string = await this.wallet.db.GetMasterKey(
+        "mnemonic",
+        password
+      );
+
+      if (mnemonic) {
+        this.setState({
+          askPassword: false,
+          afterPassword: undefined,
+          errorPassword: "",
+        });
+        await this.onUpdateNamePassword(name, key, value, password);
+      } else {
+        this.setState({ errorPassword: "Wrong password!" });
+      }
+    };
+    if (await this.wallet.GetMasterKey("mnemonic", undefined)) {
+      await afterFunc("");
+    } else {
+      this.setState({
+        askPassword: true,
+        afterPassword: afterFunc,
+        errorPassword: "",
+      });
+    }
+  };
+
+  public onUpdateNamePassword = async (
+    name: string,
+    key: string,
+    value: string,
+    password = ""
+  ) => {
+    try {
+      const txs = await this.wallet.UpdateName(name, "", key, value, password);
+      if (txs) {
+        this.setState({
+          showConfirmTx: true,
+          confirmTxText: `Update ${name}: Set ${key} to ${value} - Fee: ${
+            txs.fee / 1e8
+          }`,
+          toSendTxs: txs.tx,
+        });
+      } else {
+        this.setState({
+          errorLoad: "Could not create transaction.",
+          showConfirmTx: false,
+          confirmTxText: "",
+          toSendTxs: [],
+        });
+      }
+    } catch (e: any) {
+      this.setState({
+        errorLoad: e.toString(),
+        showConfirmTx: false,
+        confirmTxText: "",
+        toSendTxs: [],
       });
     }
   };
@@ -486,6 +640,12 @@ class App extends React.Component<any, any> {
       nodeData,
       addNodeAddress,
       addNodeLabel,
+      names,
+      showRegisterName,
+      errorRegisterName,
+      showOpenName,
+      nameData,
+      openedName,
     } = this.state;
 
     return (
@@ -509,9 +669,11 @@ class App extends React.Component<any, any> {
                 toSendTxs: [],
               });
             }}
-            onOk={() => {
+            onOk={async () => {
               try {
-                this.wallet.SendTransaction(toSendTxs);
+                /* for (transactions to send) { */
+                await this.wallet.SendTransaction(toSendTxs);
+                /* } */
               } catch (e: any) {
                 this.setState({
                   errorLoad: e.toString(),
@@ -539,6 +701,18 @@ class App extends React.Component<any, any> {
               });
             }}
             error={errorPassword}
+          />
+          <RegisterName
+            open={showRegisterName}
+            onAccept={this.onRegisterName}
+            onClose={() => {
+              this.setState({
+                showRegisterName: false,
+                errorRegisterName: "",
+              });
+            }}
+            wallet={this.wallet}
+            error={errorRegisterName}
           />
           <AddNode
             open={showAddNode}
@@ -606,6 +780,21 @@ class App extends React.Component<any, any> {
             }}
             nodeData={nodeData}
           />
+          <OpenName
+            open={showOpenName}
+            openedName={openedName}
+            nameData={nameData}
+            onUpdate={this.onUpdateName}
+            onClose={() => {
+              this.setState({
+                showOpenName: false,
+                openedName: "",
+                nameData: {},
+              });
+            }}
+            nodeData={nodeData}
+            wallet={this.wallet}
+          />
           {errorLoad ? (
             <Error
               actions={[
@@ -659,6 +848,9 @@ class App extends React.Component<any, any> {
                   }}
                   onStake={() => {
                     this.setState({ bottomNavigation: 5 });
+                  }}
+                  onDotNav={() => {
+                    this.setState({ bottomNavigation: 6 });
                   }}
                 />
               ) : bottomNavigation == 1 ? (
@@ -723,6 +915,24 @@ class App extends React.Component<any, any> {
                   onStake={() => {
                     this.setState({ bottomNavigation: 5 });
                   }}
+                />
+              ) : bottomNavigation == 6 ? (
+                <DotNav
+                  names={names}
+                  onRegisterName={() => {
+                    this.setState({
+                      showRegisterName: true,
+                    });
+                  }}
+                  onOpenName={async (name: string) => {
+                    const data = await this.wallet.ResolveName(name);
+                    this.setState({
+                      showOpenName: true,
+                      openedName: name,
+                      nameData: data,
+                    });
+                  }}
+                  blockHeight={blockHeight}
                 />
               ) : (
                 <>Unknown</>

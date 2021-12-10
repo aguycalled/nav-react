@@ -140,6 +140,7 @@ export default function OpenNode(props: any) {
 
     if (
       history[h].pos == 1 &&
+      history[h].addresses_in &&
       history[h].addresses_in.staking.indexOf(nodeData.label.address) != -1
     ) {
       if (diffDays < 30) {
@@ -226,16 +227,16 @@ export default function OpenNode(props: any) {
                       "staking"
                     ].pending >
                     0 && Object.keys(stakingStats).length
-                    ? ((((totalStaked30d / Object.keys(stakingStats).length) *
-                        365) /
+                    ? (
+                        ((totalStaked30d / Object.keys(stakingStats).length) *
+                          36500) /
                         (walletAddresses["staking"][nodeData.label.address][
                           "staking"
                         ].confirmed +
                           walletAddresses["staking"][nodeData.label.address][
                             "staking"
-                          ].pending)) *
-                        100) /
-                      1e8
+                          ].pending)
+                      ).toFixed(2)
                     : 0}
                   {"%"}
                 </Typography>

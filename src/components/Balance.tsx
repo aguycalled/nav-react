@@ -50,8 +50,15 @@ function useWindowDimensions() {
 }
 
 function Balance(props: any): React.ReactElement {
-  const { balances, history, syncProgress, pendingQueue, onSwap, onStake } =
-    props;
+  const {
+    balances,
+    history,
+    syncProgress,
+    pendingQueue,
+    onSwap,
+    onStake,
+    onDotNav,
+  } = props;
 
   const [hideWarning, setHideWarning] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
@@ -66,8 +73,6 @@ function Balance(props: any): React.ReactElement {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  console.log(history);
 
   const itemsCount = Math.floor((height - 390) / 70);
 
@@ -303,6 +308,15 @@ function Balance(props: any): React.ReactElement {
                   >
                     Staking
                   </MenuItem>
+                  <MenuItem
+                    sx={{ padding: 1, px: 4 }}
+                    onClick={() => {
+                      onDotNav();
+                      handleClose();
+                    }}
+                  >
+                    dotNav
+                  </MenuItem>
                 </Menu>
               </div>
             </Box>
@@ -358,9 +372,13 @@ function Balance(props: any): React.ReactElement {
                           }}
                         >
                           {" "}
-                          {String(el.amount / 1e8) +
+                          {String(el.amount / (el.type == "nft" ? 1 : 1e8)) +
                             " " +
-                            (el.type == "xnav" ? "xNAV" : "NAV")}
+                            (el.type == "xnav"
+                              ? "xNAV"
+                              : el.type == "token" || el.type == "nft"
+                              ? el.token_name
+                              : "NAV")}
                         </Typography>
                       }
                       secondary={
@@ -374,6 +392,10 @@ function Balance(props: any): React.ReactElement {
                               ? "NAV"
                               : el.type == "xnav"
                               ? "xNAV"
+                              : el.type == "nft"
+                              ? "NFT"
+                              : el.type == "token"
+                              ? "Private Token"
                               : "Staking"}
                           </Typography>
                         </React.Fragment>

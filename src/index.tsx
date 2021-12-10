@@ -4,6 +4,7 @@ import App from "./App";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const njs = require("navcoin-js");
+(window as any).njs = njs;
 
 njs.wallet.Init().then(async () => {
   ReactDOM.render(

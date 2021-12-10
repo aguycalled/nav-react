@@ -42,10 +42,11 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
   );
 };
 
-export default function AskPassword(props: any) {
-  const { open, onClose, onAccept, error } = props;
+export default function RegisterName(props: any) {
+  const { open, onClose, onAccept, wallet } = props;
 
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [error, setError] = useState(false);
 
   const handleClose = onClose;
 
@@ -62,7 +63,7 @@ export default function AskPassword(props: any) {
           id="customized-dialog-title"
           onClose={handleClose}
         >
-          Spending Password
+          Register a dotNav name
         </BootstrapDialogTitle>
         <DialogContent
           sx={{
@@ -73,17 +74,23 @@ export default function AskPassword(props: any) {
           }}
         >
           <TextField
-            id="filled-password-input"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
+            id="name-input"
+            label="Name"
+            autoComplete="off"
             variant="filled"
             error={error ? true : false}
-            sx={{ mx: 2, mt: 2, width: 320 }}
+            value={name}
+            sx={{ mx: 0, mt: 2, width: "100%", minWidth: 300 }}
             onChange={(e) => {
-              setPassword(e.target.value);
+              setName(e.target.value.toLowerCase());
+              if (wallet.IsValidDotNavName(e.target.value.toLowerCase())) {
+                setError(false);
+              } else {
+                setError(true);
+              }
             }}
           />
+
           <Typography
             sx={{
               textAlign: "right",
@@ -96,10 +103,12 @@ export default function AskPassword(props: any) {
         <DialogActions>
           <Button
             autoFocus
-            onClick={async () => {
-              await handleAccept(password);
+            onClick={() => {
+              if (!error && name) {
+                handleAccept(name);
+              }
             }}
-            sx={{ mx: 2, mb: 2 }}
+            sx={{ mx: 2, mb: 2, width: "auto", float: "right" }}
           >
             Ok
           </Button>
