@@ -10,21 +10,10 @@ import themeOptions from "./themes/Default";
 import Error from "./components/Error";
 import Loading from "./components/Loading";
 
-import NAV_logo from "./assets/NAV.png";
-import WNAV_logo from "./assets/WNAV.svg";
-
 import {
-  Avatar,
   BottomNavigation,
   BottomNavigationAction,
-  Box,
-  Icon,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Paper,
-  Typography,
 } from "@material-ui/core";
 
 import {
@@ -41,7 +30,6 @@ import Mnemonic from "./components/Mnemonic";
 import AskPassword from "./components/AskPassword";
 import xnav from "./assets/XNAV.png";
 import nav from "./assets/NAV.png";
-import Utxos from "./components/Utxos";
 import Receive from "./components/Receive";
 import Send from "./components/Send";
 import ConfirmTx from "./components/ConfirmTx";
@@ -60,14 +48,12 @@ const Binance = require("node-binance-api");
 themeOptions.spacing(10);
 
 interface IAppState {
-  wallet?: any;
   walletName: string;
   walletList: string[];
   loadingWallet: boolean;
   connectingWallet: boolean;
   errorLoad: string;
   bottomNavigation: any;
-  currency: number;
   balances: {
     nav: { confirmed: number; pending: number };
     xnav: { confirmed: number; pending: number };
@@ -87,6 +73,7 @@ interface IAppState {
   showConfirmTx: boolean;
   toSendTxs: string[];
   blockHeight: number;
+<<<<<<< HEAD
   stakingAddresses: any[];
   showAddNode: boolean;
   showOpenNode: boolean;
@@ -100,6 +87,8 @@ interface IAppState {
   showOpenName: boolean;
   nameData: any;
   openedName: string;
+=======
+>>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
 }
 
 interface IWalletHistory {
@@ -113,21 +102,13 @@ interface IWalletHistory {
   memos: string[];
 }
 
-const currencies: { name: string; logo: string }[] = [
-  { name: "NAV", logo: NAV_logo },
-  { name: "xNAV", logo: WNAV_logo },
-  //{ name: 'wNAV', logo: WNAV_logo }
-];
-
 const INITIAL_STATE: IAppState = {
-  wallet: undefined,
   walletName: "",
   walletList: [],
   loadingWallet: false,
   connectingWallet: false,
   errorLoad: "",
   bottomNavigation: 0,
-  currency: 0,
   balances: {
     nav: { confirmed: 0, pending: 0 },
     xnav: { confirmed: 0, pending: 0 },
@@ -147,6 +128,7 @@ const INITIAL_STATE: IAppState = {
   showConfirmTx: false,
   toSendTxs: [],
   blockHeight: -1,
+<<<<<<< HEAD
   stakingAddresses: [],
   showAddNode: false,
   showOpenNode: false,
@@ -160,11 +142,12 @@ const INITIAL_STATE: IAppState = {
   showOpenName: false,
   nameData: {},
   openedName: "",
+=======
+>>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
 };
 
 class App extends React.Component<any, any> {
   public state: IAppState;
-  public binance: any;
   public njs: any;
   public wallet: any;
 
@@ -174,8 +157,6 @@ class App extends React.Component<any, any> {
       ...INITIAL_STATE,
     };
     this.njs = props.njs;
-
-    this.binance = new Binance();
   }
 
   public async componentDidMount() {
@@ -617,7 +598,6 @@ class App extends React.Component<any, any> {
       errorLoad,
       bottomNavigation,
       connectingWallet,
-      currency,
       balances,
       history,
       syncProgress,
@@ -633,6 +613,7 @@ class App extends React.Component<any, any> {
       showConfirmTx,
       toSendTxs,
       blockHeight,
+<<<<<<< HEAD
       stakingAddresses,
       showAddNode,
       errorAddNode,
@@ -646,6 +627,8 @@ class App extends React.Component<any, any> {
       showOpenName,
       nameData,
       openedName,
+=======
+>>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
     } = this.state;
 
     return (
@@ -702,6 +685,7 @@ class App extends React.Component<any, any> {
             }}
             error={errorPassword}
           />
+<<<<<<< HEAD
           <RegisterName
             open={showRegisterName}
             onAccept={this.onRegisterName}
@@ -795,6 +779,8 @@ class App extends React.Component<any, any> {
             nodeData={nodeData}
             wallet={this.wallet}
           />
+=======
+>>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
           {errorLoad ? (
             <Error
               actions={[
@@ -860,14 +846,6 @@ class App extends React.Component<any, any> {
                   balance={balances}
                   onSend={this.onSend}
                 />
-              ) : bottomNavigation == 4 ? (
-                <Swap
-                  addresses={addresses}
-                  wallet={this.njs.wallet}
-                  network={this.wallet.network}
-                  balance={balances}
-                  onSend={this.onSend}
-                />
               ) : bottomNavigation == 2 ? (
                 <Receive addresses={addresses}></Receive>
               ) : bottomNavigation == 3 ? (
@@ -896,6 +874,7 @@ class App extends React.Component<any, any> {
                   walletName={walletName}
                   network={this.wallet.network}
                 ></Settings>
+<<<<<<< HEAD
               ) : bottomNavigation == 5 ? (
                 <Staking
                   addresses={addresses}
@@ -934,6 +913,8 @@ class App extends React.Component<any, any> {
                   }}
                   blockHeight={blockHeight}
                 />
+=======
+>>>>>>> a9f20d75f65bbcb9882ccfea1d77d4f05b72ca45
               ) : (
                 <>Unknown</>
               )}
@@ -961,8 +942,12 @@ class App extends React.Component<any, any> {
                     icon={<MoveToInboxOutlined />}
                   />
                   <BottomNavigationAction
-                    label="Settings"
-                    icon={<SettingsOutlined />}
+                      label="Settings"
+                      icon={<SettingsOutlined />}
+                  />
+                  <BottomNavigationAction
+                      label="Chat"
+                      icon={<SettingsOutlined />}
                   />
                 </BottomNavigation>
               </Paper>
