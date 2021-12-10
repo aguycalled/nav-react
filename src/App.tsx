@@ -296,7 +296,7 @@ class App extends React.Component<any, any> {
         this.setState({ showMnemonic: true, mnemonic: mnemonic });
       });
 
-      this.wallet.on("new_tx", async (entry: IWalletHistory) => {});
+      //this.wallet.on("new_tx", async (entry: IWalletHistory) => {});
 
       this.wallet.on("new_block", (height: number) => {
         this.setState({ blockHeight: height });
@@ -859,6 +859,14 @@ class App extends React.Component<any, any> {
                   walletName={walletName}
                   network={this.wallet.network}
                 ></Settings>
+              ) : bottomNavigation == 4 ? (
+                <Swap
+                  addresses={addresses}
+                  wallet={this.njs.wallet}
+                  network={this.wallet.network}
+                  balance={balances}
+                  onSend={this.onSend}
+                />
               ) : bottomNavigation == 5 ? (
                 <Staking
                   addresses={addresses}
@@ -925,10 +933,6 @@ class App extends React.Component<any, any> {
                   />
                   <BottomNavigationAction
                     label="Settings"
-                    icon={<SettingsOutlined />}
-                  />
-                  <BottomNavigationAction
-                    label="Chat"
                     icon={<SettingsOutlined />}
                   />
                 </BottomNavigation>
